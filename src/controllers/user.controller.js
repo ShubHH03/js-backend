@@ -3,6 +3,9 @@ import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import e from "cors";
+
+
 
 const registerUser = asyncHandler(async (req, res) => {
   // get user details from frontend
@@ -86,4 +89,41 @@ const registerUser = asyncHandler(async (req, res) => {
   
 });
 
-export { registerUser };
+const loginUSer = asyncHandler(async (req, res) => {
+
+  // req body -> data
+  const {username, email, password} = req.body
+
+  // check username or email
+  if(!username || !email){
+    throw new ApiError(400, "username or email is required")
+  }
+
+  // find the user
+  const user = await User.findOne({
+    $or: [{ username }, { email }],
+  })
+
+  if(!user){
+    throw new ApiError(404, "User does not exist")
+  }
+
+  // password check
+  const isPasswordValid = await user.isPasswordCorrect(password)
+
+  if(!isPasswordValid){
+    throw new ApiError(401, "Password is incorrect")
+  }
+
+
+  // send access and refresh token
+  // send cookie
+
+});
+
+
+
+export { 
+  registerUser,
+  loginUSer
+};
