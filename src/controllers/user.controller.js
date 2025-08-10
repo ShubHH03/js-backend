@@ -151,4 +151,8 @@ const loginUSer = asyncHandler(async (req, res) => {
 
 });
 
+const logoutUser = asyncHandler(async(registerUser, res) => {
+  
+})
+
 export { registerUser, loginUSer };
